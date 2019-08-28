@@ -9,26 +9,32 @@ COMPAS_WASP - Roadmap
 
 -- Wasp Implementation in Compas datastructures
 --
----- Compas_Assembly
----- Extending Frame / Mesh / Network classes
----- Attributes (?)
+---- compas_assembly (?)
+---- Maybe better to keep separate and create exchange functions
+---- Introduce user-defined function handle in Wasp constraints (different constraints from compas-fab/compas-rbe possible)
 
 
 -- MeshMesh collsision detection
 --
----- ???
+---- PyBullet implementation in compas-fab (Yijang)
+---- LibAgl mesh intersection
+---- Custom C++ code using CTypes
 
 
 -- Performance Issues
 --
 ---- Single calls to rpc
----- implement wrapper around RhinoCommon xforms (how?)
+---- reduce amount of data sent to rpc (just vertices)
+---- Store data on rpc and send the minimum data needed
 
+
+-- Grasshopper plugin implementation
+--
+---- implement backend switch between compas and wasp core
+---- document process
  
 
 COMPAS_WASP - Issues
 
--- installing packages during development
 -- Issue in Blender installation
--- Moving a package location on drive
 -- Performance
