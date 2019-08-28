@@ -1,0 +1,34 @@
+COMPAS_WASP - Roadmap
+
+-- Grasshopper <> Compas <> Blender
+--
+---- Blender setup with Compas (bug?)
+---- Serialization methods for Wasp classes
+---- Blender Artist for Wasp
+
+
+-- Wasp Implementation in Compas datastructures
+--
+---- Compas_Assembly
+---- Extending Frame / Mesh / Network classes
+---- Attributes (?)
+
+
+-- MeshMesh collsision detection
+--
+---- ???
+
+
+-- Performance Issues
+--
+---- Single calls to rpc
+---- implement wrapper around RhinoCommon xforms (how?)
+
+ 
+
+COMPAS_WASP - Issues
+
+-- installing packages during development
+-- Issue in Blender installation
+-- Moving a package location on drive
+-- Performance
