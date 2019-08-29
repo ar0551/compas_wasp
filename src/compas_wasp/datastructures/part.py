@@ -14,12 +14,20 @@ from compas.geometry import centroid_points
 from compas.geometry import Point
 
 from compas.datastructures import Mesh
+from compas.datastructures import Datastructure
+
+from compas.datastructures._mixins import FromToData
+from compas.datastructures._mixins import FromToJson
+from compas.datastructures._mixins import FromToPickle
+
+
 
 if not compas.IPY:
     from compas.datastructures import mesh_transformed_numpy
     get_transformed_mesh = mesh_transformed_numpy
 
 else:
+    ## basic compas methos for transformations
     if True:
         from compas.datastructures import mesh_transformed
         get_transformed_mesh = mesh_transformed
@@ -35,6 +43,7 @@ else:
 
         get_transformed_mesh = transform_part_geo
         """
+    ## rpc call for transformation with numpy
     else:
         from compas.rpc import Proxy
         compas_geometry = Proxy("compas.geometry")
@@ -58,7 +67,11 @@ else:
 __all__ = ['Part']
 
 
-class Part(object):
+class Part(FromToData,
+           FromToJson,
+           FromToPickle,
+           Datastructure):
+    
     """Wasp basic Part
 
     """
@@ -67,6 +80,7 @@ class Part(object):
 
     #def __init__(self, name, geometry, connections, collider, attributes, dim=None, id=None, field=None):  
     def __init__(self, _name, _geometry, _connections):
+        super(Part, self).__init__()
         self.name = _name
         self.id = None
         self.geo = _geometry
@@ -119,6 +133,48 @@ class Part(object):
     def ToString(self):
         return "WaspPart [name: %s, id: %s]" % (self.name, self.id)
     
+    @property
+    def data(self):
+        """dict : A data dict representing the part data structure for serialisation.
+
+        The dict has the following structure:
+
+        * 'aaa'   => dict
+
+        Note
+        ----
+        All dictionary keys are converted to their representation value (``repr(key)``)
+        to ensure compatibility of all allowed key types with the JSON serialisation
+        format, which only allows for dict keys that are strings.
+
+        """
+        data = {'name'                  : self.name,
+                'id'                    : self.id,
+                'geo'                   : self.geo.to_data(),
+                'connections'           : {},
+                'active_connections'    : {},
+                'transformation'        : self.transformation.to_data(),
+                'center'                : self.center.to_data(),
+                'parent'                : self.parent,
+                'children'              : self.children},
+        
+        return data
+
+    @data.setter
+    def data(self, data):
+        name                    = data.get('name') or {}
+        part_id                 = data.get('id') or {}
+        geo                     = data.get('geo') or {}
+        connections             = data.get('connections') or {}
+        active_connections      = data.get('active_connections') or {}
+        transformation          = data.get('transformation') or {}
+        center                  = data.get('center') or {}
+        parent                  = data.get('parent') or {}
+        children                = data.get('children') or {}
+
+
+
+
     def centroid(self):
         """Compute the centroid of the block.
 

@@ -19,6 +19,7 @@ COMPAS_WASP - Roadmap
 ---- PyBullet implementation in compas-fab (Yijang)
 ---- LibAgl mesh intersection
 ---- Custom C++ code using CTypes
+---- Serialize an aggregation for working in pure Compas outside Rhino/Gh
 
 
 -- Performance Issues
