@@ -20,6 +20,7 @@ from compas.datastructures._mixins import FromToData
 from compas.datastructures._mixins import FromToJson
 from compas.datastructures._mixins import FromToPickle
 
+from compas_wasp.datastructures import Connection
 
 
 if not compas.IPY:
@@ -79,7 +80,7 @@ class Part(FromToData,
     __module__ = 'compas_wasp'
 
     #def __init__(self, name, geometry, connections, collider, attributes, dim=None, id=None, field=None):  
-    def __init__(self, _name, _geometry, _connections):
+    def __init__(self, _name=None, _geometry=None, _connections=[]):
         super(Part, self).__init__()
         self.name = _name
         self.id = None
@@ -98,8 +99,10 @@ class Part(FromToData,
             count += 1
         
         self.transformation = Transformation()
-        center_coords = self.geo.centroid()
-        self.center = Point(center_coords[0], center_coords[1], center_coords[2])
+        self.center = Point(0,0,0)
+        if self.geo is not None:
+            center_coords = self.geo.centroid()
+            self.center = Point(center_coords[0], center_coords[1], center_coords[2])
 
         #self.collider = collider
 
@@ -151,26 +154,41 @@ class Part(FromToData,
         data = {'name'                  : self.name,
                 'id'                    : self.id,
                 'geo'                   : self.geo.to_data(),
-                'connections'           : {},
-                'active_connections'    : {},
-                'transformation'        : self.transformation.to_data(),
-                'center'                : self.center.to_data(),
+                'connections'           : [c.to_data() for c in self.connections],
+                'active_connections'    : self.active_connections,
+                'transformation'        : list(self.transformation),
                 'parent'                : self.parent,
-                'children'              : self.children},
+                'children'              : self.children}
         
         return data
 
     @data.setter
     def data(self, data):
-        name                    = data.get('name') or {}
-        part_id                 = data.get('id') or {}
-        geo                     = data.get('geo') or {}
-        connections             = data.get('connections') or {}
-        active_connections      = data.get('active_connections') or {}
-        transformation          = data.get('transformation') or {}
-        center                  = data.get('center') or {}
-        parent                  = data.get('parent') or {}
-        children                = data.get('children') or {}
+        p_name                    = data.get('name') or None
+        p_id                      = data.get('id') or None
+        p_geo                     = data.get('geo') or {}
+        p_connections             = data.get('connections') or []
+        p_active_connections      = data.get('active_connections') or []
+        p_transformation          = data.get('transformation') or []
+        p_parent                  = data.get('parent') or None
+        p_children                = data.get('children') or []
+
+        self.name = p_name
+        self.id = p_id
+        self.geo = Mesh.from_data(p_geo)
+
+        self.connections = [Connection.from_data(c) for c in p_connections]
+        self.active_connections = p_active_connections
+
+        self.transformation = Transformation.from_matrix(p_transformation)
+
+        center_coords = self.geo.centroid()
+        self.center = Point(center_coords[0], center_coords[1], center_coords[2])
+
+        self.parent = p_parent
+        self.children = p_children
+
+
 
 
 

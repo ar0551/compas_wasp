@@ -221,6 +221,12 @@ class Aggregation(object):
                 
                 if next_rule is not None:
                     next_part = self.parts[next_rule.part2]
+                    print("----")
+                    print(next_rule.conn2)
+                    print(next_part.connections[next_rule.conn2].flip_pln)
+                    print("-")
+                    print(conn_01.frame)
+                    print("----")
                     orientTransform = Transformation.from_frame_to_frame(next_part.connections[next_rule.conn2].flip_pln, conn_01.frame)
                     
                     ## boolean checks for all constraints
